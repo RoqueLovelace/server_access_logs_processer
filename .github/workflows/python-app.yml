@@ -19,10 +19,16 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.13"
-    - name: Install dependencies
+    - name: Install productions dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install development dependencies
+      run: |
+        pip install pytest httpx
     - name: Test with pytest
       run: |
         pytest test_slog_processer_serv.py
+    - name: Build docker image
+      run: |
+        docker build -t slog_processer_serv_image .
