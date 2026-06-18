@@ -62,5 +62,6 @@ async def say_hello_world():
 @app.get('/hello/{name}')
 async def say_hello_name(name: str = "Default"):
   # inofensive line
+  # inofensive change
   message = "Hello " + name + "!"
   return { "message": message }
