@@ -26,7 +26,6 @@ async def upload_file(file: UploadFile):
         response_dictionary["MalformedLog"] += 1
         return
       http_status_code = int(line[2].split()[0])
-      if http_status_code >= 100 and http_status_code < 600:
 #        print('code: ', http_status_code)
         response_dictionary[http_status_code] += 1
       else:
