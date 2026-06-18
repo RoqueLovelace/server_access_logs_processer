@@ -22,8 +22,6 @@ async def upload_file(file: UploadFile):
     try:
       line = str(line, 'utf-8')
       line = line.split("\"")
-      if len(line) != 3 or len(line[0].split()) + len(line[2].split()) != 7 or len(line[1].split()) != 3:
-        response_dictionary["MalformedLog"] += 1
         return
       http_status_code = int(line[2].split()[0])
 #        print('code: ', http_status_code)
@@ -32,7 +30,6 @@ async def upload_file(file: UploadFile):
         response_dictionary[invalid_code_key] += 1
 #        print('invalid code: ', http_status_code)
     except UnicodeDecodeError:
-      raise HTTPException(status_code=415, detail=UnsupportedDetail)
 #      response_dictionary["CorruptLine"] += 1
     except ValueError:
       response_dictionary["ValueError"] += 1
