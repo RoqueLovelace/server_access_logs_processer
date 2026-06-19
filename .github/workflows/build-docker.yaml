@@ -12,7 +12,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: build image
-        run: docker build . -t roquelovelace/log_processer_service:latest
+        run: docker build . -t roquelovelace/logs_processer_service:latest
       - name: push image to docker hub
         run: | # to execute more commands
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
