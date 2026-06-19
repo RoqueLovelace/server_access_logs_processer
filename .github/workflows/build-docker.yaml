@@ -2,7 +2,7 @@ name: Build and Publish image to Docker Hub
 
 # when does it run (trigger)
 on:
-  [workflow dispatch] # provides button on the repo
+  [workflow_dispatch] # provides button on the repo
 
 # what does it do
 jobs:
