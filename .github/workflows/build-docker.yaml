@@ -1,0 +1,18 @@
+name: Build and Publish image to Docker Hub
+
+# when does it run (trigger)
+on:
+  [workflow dispatch] # provides button on the repo
+
+# what does it do
+jobs:
+  publish_image:
+    runs-on: ubuntu-latest # what OS does it need
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build image
+        run: docker build . -t roquelovelace/log_processer_service:latest
+      - name: push image to docker hub
+        run: | # to execute more commands
+          docker push roquelovelace/log_processer_service:latest
