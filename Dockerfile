@@ -10,4 +10,4 @@ COPY slog_processer_serv.py ./
 
 EXPOSE 8000
 
-CMD ["uvicorn","slog_processer_serv:app","--reload","--host","0.0.0.0"]
+CMD ["uvicorn","slog_processer_serv:app","--host","0.0.0.0"]

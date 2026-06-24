@@ -1,0 +1,34 @@
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    networks:
+      - log-processer
+    depends_on:
+      - mongodb
+
+
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    networks:
+      - log-processer
+    volumes:
+      - "mongo_dta:/data/db"
+    env_file: .env
+    command:
+      - --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+
+
+
+networks:
+  log-processer: {}
+volumes:
+  mongo_dta:
