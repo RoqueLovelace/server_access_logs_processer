@@ -15,6 +15,8 @@ load_dotenv()
 
 CHUNK_SIZE = 64 * 1024 
 DATABASE_CONN_STRING = os.getenv('MONGO_URI')
+if not DATABASE_CONN_STRING:
+  raise ValueError("FATAL: MONGO_URI environment variable is missing. Halting startup.")
 
 async def init_database():
   db_client = AsyncIOMotorClient(DATABASE_CONN_STRING)
