@@ -39,6 +39,7 @@ jobs:
       env:
         MONGO_URI: ${{ secrets.MONGO_URI }}
       run: |
+        sleep 5
         pytest test_slog_processer_serv.py -v
 
     - name: Build docker image
