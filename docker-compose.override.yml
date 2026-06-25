@@ -1,0 +1,7 @@
+services:
+  api:
+    volumes:
+      - .:/app
+    command: >
+      bash -c "pip install -r requirements_dev.txt && 
+      uvicorn slog_processer_serv:app --reload --host 0.0.0.0"

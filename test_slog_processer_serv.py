@@ -1,12 +1,16 @@
 from io import BytesIO
 from slog_processer_serv import app
-from fastapi.testclient import TestClient
 import asyncio
 import pytest
 import json
+from motor.motor_asyncio import AsyncIOMotorClient
+import pytest_asyncio
+from dotenv import load_dotenv
+import os
+from httpx2 import AsyncClient, ASGITransport
+from pprint import pprint
 
-
-
+load_dotenv()
 #
 #binary_buffer.write(b'hello')
 #
@@ -14,22 +18,29 @@ import json
 #
 #print(result_bytes)
 
-@pytest.fixture
-def client():
-  return TestClient(app)
 
-def test_say_hello(client):
-  response = client.get("/")
+@pytest_asyncio.fixture
+async def client():
+  app.state.db_client = AsyncIOMotorClient(os.getenv('MONGO_URI_TEST'))
+  async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    yield ac
+  app.state.db_client.close()
+
+@pytest.mark.asyncio
+async def test_say_hello(client):
+  response = await client.get("/")
   assert response.status_code == 200
-  assert response.json() == {"message": "Hello World!"}
+  assert response.json() == {"message": "Hello World! What's up?"}
 
 
-def test_say_hello_name(client):
-  response = client.get("/hello/chris")
+@pytest.mark.asyncio
+async def test_say_hello_name(client):
+  response = await client.get("/hello/chris")
   assert response.status_code == 200
   assert response.json() == {"message": "Hello " + "chris" + "!"}
 
-def test_upload_fine_file(client):
+@pytest.mark.asyncio
+async def test_upload_fine_file(client):
   buffer = BytesIO()
 
   # log with no problems. Should add one to 200 element in the response body
@@ -43,21 +54,23 @@ def test_upload_fine_file(client):
 
 
   files = { "file": ("log_test.txt", buffer, "text/plain") }
-  response = client.post("/upload", files=files)
+  response = await client.post("/upload", files=files)
 
 
   audit = response.json()
 #  audit = json.loads(response.json())
-  print("audit: ",audit)
+  print("audit: ")
+  pprint(audit)
 
   assert response.status_code == 200
 #  assert "\'MalformedLog\': 1" in response.json()
-  assert audit["200"] == 1
-  assert audit["MalformedLog"] == 1
-  assert audit["Not a valid HTTP Status Code"] == 1
+  assert audit["logs"]["200"] == 1
+  assert audit["logs"]["MalformedLog"] == 1
+  assert audit["logs"]["Not a valid HTTP Status Code"] == 1
 
 
-def test_upload_binary_file(client):
+@pytest.mark.asyncio
+async def test_upload_binary_file(client):
   buffer = BytesIO()
 
   # log with no UTF-8 bytes. Should trigger a 415 response 
@@ -66,12 +79,13 @@ def test_upload_binary_file(client):
 
 
   files = { "file": ("log_test.txt", buffer, "text/plain") }
-  response = client.post("/upload", files=files)
+  response = await client.post("/upload", files=files)
 
   assert response.status_code == 415
 
 
-def test_upload_bad_type_file(client):
+@pytest.mark.asyncio
+async def test_upload_bad_type_file(client):
   buffer = BytesIO()
 
   # any content
@@ -79,5 +93,5 @@ def test_upload_bad_type_file(client):
 
 
   files = { "file": ("log_test.txt", buffer, "text/html") }
-  response = client.post("/upload", files=files)
+  response = await client.post("/upload", files=files)
   assert response.status_code == 415
