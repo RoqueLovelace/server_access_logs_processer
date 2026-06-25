@@ -37,7 +37,7 @@ jobs:
 
     - name: Test with pytest
       env:
-        MONGO_URI: ${{ secrets.MONGO_URI }}
+        MONGO_URI: mongodb://${{ secrets.MONGO_USERNAME }}:${{ secrets.MONGO_PASSWORD }}@localhost:27017/?authSource=admin
       run: |
         pytest test_slog_processer_serv.py -v
 
