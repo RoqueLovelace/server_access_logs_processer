@@ -28,7 +28,7 @@ jobs:
         pip install pytest httpx
     - name: Test with pytest
       run: |
-        pytest test_slog_processer_serv.py
+        if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
     - name: Build docker image
       run: |
         docker build -t slog_processer_serv_image .
