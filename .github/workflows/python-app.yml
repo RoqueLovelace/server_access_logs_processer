@@ -16,11 +16,6 @@ jobs:
         image: mongo:7.0
         ports:
           - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-          MONGO_INITDB_DATABASE: admin
-
     steps:
     - uses: actions/checkout@v4
     
@@ -36,8 +31,6 @@ jobs:
         pip install -r requirements_dev.txt
 
     - name: Test with pytest
-      env:
-        MONGO_URI: ${{ secrets.MONGO_URI }}
       run: |
         pytest test_slog_processer_serv.py -v
 
