@@ -1,3 +1,4 @@
-httpx
+httpx2
 pytest
 watchfiles
+pytest-asyncio
