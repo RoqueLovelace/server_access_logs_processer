@@ -17,8 +17,8 @@ jobs:
         ports:
           - 27017:27017
         env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USERNAME }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          MONGO_INITDB_ROOT_USERNAME: citestuser
+          MONGO_INITDB_ROOT_PASSWORD: citestpassword
           MONGO_INITDB_DATABASE: admin
 
     steps:
@@ -37,7 +37,7 @@ jobs:
 
     - name: Test with pytest
       env:
-        MONGO_URI: ${{ secrets.MONGO_URI }}
+        MONGO_URI: mongodb://citestuser:citestpassword@localhost:27017/?authSource=admin
       run: |
         pytest test_slog_processer_serv.py -v
 
